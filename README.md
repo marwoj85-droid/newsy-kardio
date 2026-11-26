@@ -1,0 +1,47 @@
+# Newsy Kardio
+
+Aplikacja na telefon (PWA) z nowymi publikacjami naukowymi z kardiologii: PubMed i kanały RSS Elsevier.
+
+## Jak to działa
+
+- **GitHub Actions** co 4 godziny uruchamia `lib/fetch.mjs`: pobiera nowe publikacje, dokleja je do poprzednich danych (30 dni) i publikuje stronę.
+- **GitHub Pages** udostępnia aplikację pod adresem `https://<login>.github.io/<repozytorium>/`.
+- Na telefonie otwierasz ten adres w Chrome, wybierasz **⋮ → Dodaj do ekranu głównego / Zainstaluj aplikację** i masz ikonę jak zwykła aplikacja. Ostatnio pobrane dane działają też bez internetu.
+- Koszt: 0 zł.
+
+## Publikacja (jednorazowo)
+
+1. Na github.com utwórz **publiczne** repozytorium, np. `newsy-kardio` (puste, bez README).
+2. Wyślij do niego ten folder (`git push`).
+3. W repozytorium: **Settings → Pages → Source: GitHub Actions**.
+4. **Actions → Aktualizacja publikacji → Run workflow**. Po ok. 2 minutach aplikacja jest pod adresem z kroku powyżej.
+
+## Co jest pobierane
+
+- **PubMed** (`config.json` → `pubmed`):
+  - wszystko z kluczowych czasopism kardiologicznych (`keyJournals`),
+  - z czasopism ogólnomedycznych (NEJM, Lancet, JAMA…) tylko kardiologia,
+  - z pozostałych tylko RCT, meta-analizy, przeglądy systematyczne i wytyczne z kardiologii.
+- **Elsevier** (`config.json` → `elsevier`): pełne kanały RSS 8 czasopism; PubMed później uzupełnia te wpisy o abstrakty.
+
+Średnio ok. 60 publikacji dziennie z PubMed i ok. 7 z Elseviera.
+
+## Test na komputerze
+
+```
+node server.mjs
+```
+
+Potem otwórz http://localhost:3017 (przycisk odświeżania od razu pobiera nowe dane).
+
+## Pliki
+
+- `config.json`: zapytania i lista źródeł (tu dodaje się kolejne czasopisma).
+- `lib/fetch.mjs`: pobieranie, klasyfikacja typu i tematów.
+- `public/`: aplikacja (strona, manifest, service worker, ikony).
+- `.github/workflows/update.yml`: harmonogram pobierania i publikacji.
+- `server.mjs`: lokalny serwer do testów.
+- `sources.json`: przetestowane kanały RSS do dodania później.
+- `scripts/make-icons.mjs`: generuje ikony.
+
+„Przeczytane” i „zapisane ★” są pamiętane w telefonie (w przeglądarce).

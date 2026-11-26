@@ -1,0 +1,34 @@
+{
+  "port": 3017,
+  "refreshHours": 6,
+  "keepDays": 30,
+  "pubmed": {
+    "firstRunDays": 14,
+    "nextRunDays": 3,
+    "_scope": "Zakres tematyczny: MeSH + słowa w tytule/abstrakcie (nowe rekordy dostają MeSH z opóźnieniem).",
+    "scope": "((cardiovascular diseases[majr] OR heart[ti] OR cardiac[ti] OR cardiovascular[ti] OR coronary[ti] OR myocardial[ti] OR atrial[ti] OR ventricular[ti] OR aortic[ti] OR mitral[ti] OR tricuspid[ti] OR hypertension[ti] OR blood pressure[ti] OR cardiomyopathy[ti] OR arrhythmia*[ti] OR atherosclero*[ti] OR thrombo*[ti] OR atrial fibrillation[tiab] OR cardiology[ti] OR lipoprotein*[ti] OR cholesterol[ti]) NOT (heart rate variability[ti] OR pulmonary embolism[ti] AND cancer[ti]))",
+    "_highlight": "Poziom 1: RCT, meta-analizy, przeglądy systematyczne, wytyczne — ze wszystkich czasopism.",
+    "highlight": "(randomized controlled trial[pt] OR meta-analysis[pt] OR systematic review[pt] OR guideline[pt] OR practice guideline[pt] OR randomized[ti] OR randomised[ti] OR meta-analysis[ti] OR guideline*[ti] OR consensus statement[ti] OR scientific statement[ti])",
+    "_generalJournals": "Czasopisma ogólnomedyczne — tylko artykuły w zakresie kardiologii.",
+    "generalJournals": ["N Engl J Med", "Lancet", "JAMA", "BMJ", "Nat Med", "Ann Intern Med", "JAMA Intern Med", "Lancet Digit Health", "Lancet Diabetes Endocrinol"],
+    "_keyJournals": "Poziom 2: wszystko z kluczowych czasopism kardiologicznych (skróty NLM).",
+    "keyJournals": [
+      "Eur Heart J", "J Am Coll Cardiol", "Circulation", "JAMA Cardiol", "Nat Rev Cardiol", "Nat Cardiovasc Res",
+      "Eur J Heart Fail", "Europace", "Eur Heart J Cardiovasc Imaging", "Eur J Prev Cardiol", "Cardiovasc Res", "EuroIntervention",
+      "Circ Res", "Circ Heart Fail", "Circ Arrhythm Electrophysiol", "Circ Cardiovasc Interv", "Circ Cardiovasc Imaging", "Hypertension",
+      "JACC Heart Fail", "JACC Cardiovasc Interv", "JACC Cardiovasc Imaging", "JACC Clin Electrophysiol",
+      "Heart", "Kardiol Pol"
+    ],
+    "exclude": "(published erratum[pt] OR erratum[pt] OR retraction of publication[pt] OR expression of concern[pt])"
+  },
+  "elsevier": [
+    { "name": "International Journal of Cardiology", "abbr": "Int J Cardiol", "url": "https://rss.sciencedirect.com/publication/science/01675273" },
+    { "name": "American Journal of Cardiology", "abbr": "Am J Cardiol", "url": "https://rss.sciencedirect.com/publication/science/00029149" },
+    { "name": "American Heart Journal", "abbr": "Am Heart J", "url": "https://rss.sciencedirect.com/publication/science/00028703" },
+    { "name": "Heart Rhythm", "abbr": "Heart Rhythm", "url": "https://rss.sciencedirect.com/publication/science/15475271" },
+    { "name": "Journal of Cardiac Failure", "abbr": "J Card Fail", "url": "https://rss.sciencedirect.com/publication/science/10719164" },
+    { "name": "Canadian Journal of Cardiology", "abbr": "Can J Cardiol", "url": "https://rss.sciencedirect.com/publication/science/0828282X" },
+    { "name": "Atherosclerosis", "abbr": "Atherosclerosis", "url": "https://rss.sciencedirect.com/publication/science/00219150" },
+    { "name": "Journal of the American Society of Echocardiography", "abbr": "J Am Soc Echocardiogr", "url": "https://rss.sciencedirect.com/publication/science/08947317" }
+  ]
+}

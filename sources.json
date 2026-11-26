@@ -1,0 +1,76 @@
+{
+  "_info": "Źródła RSS z kardiologii — przetestowane 2026-11-26 (HTTP 200, świeże pozycje). filter=true: czasopismo ogólnomedyczne, trzeba filtrować słowami kluczowymi. dateInDescription=true: brak pubDate, data w treści opisu (ScienceDirect). noAbstract=true: w RSS brak abstraktu, można dociągnąć po DOI (PubMed/Crossref).",
+  "sources": [
+    { "id": "nejm", "name": "New England Journal of Medicine", "group": "Top ogólnomedyczne", "url": "https://www.nejm.org/action/showFeed?jc=nejm&type=etoc&feed=rss", "filter": true },
+    { "id": "lancet-online", "name": "The Lancet (Online First)", "group": "Top ogólnomedyczne", "url": "https://www.thelancet.com/rssfeed/lancet_online.xml", "filter": true },
+    { "id": "lancet", "name": "The Lancet (bieżący numer)", "group": "Top ogólnomedyczne", "url": "https://www.thelancet.com/rssfeed/lancet_current.xml", "filter": true },
+
+    { "id": "ehj", "name": "European Heart Journal", "group": "Top kardiologia", "url": "https://academic.oup.com/rss/site_5375/3236.xml", "noAbstract": true },
+    { "id": "ehj-aop", "name": "European Heart Journal (Advance Access)", "group": "Top kardiologia", "url": "https://academic.oup.com/rss/site_5375/advanceAccess_3236.xml" },
+    { "id": "jacc", "name": "JACC", "group": "Top kardiologia", "url": "https://www.jacc.org/action/showFeed?type=etoc&feed=rss&jc=jac" },
+    { "id": "jacc-aop", "name": "JACC (Online First)", "group": "Top kardiologia", "url": "https://www.jacc.org/action/showFeed?type=axatoc&feed=rss&jc=jac" },
+    { "id": "circ", "name": "Circulation (Ahead of Print)", "group": "Top kardiologia", "url": "https://www.ahajournals.org/action/showFeed?type=axatoc&feed=rss&jc=circ", "noAbstract": true },
+    { "id": "jama-cardio", "name": "JAMA Cardiology", "group": "Top kardiologia", "url": "https://jamanetwork.com/rss/site_192/184.xml" },
+    { "id": "jama-cardio-of", "name": "JAMA Cardiology (Online First)", "group": "Top kardiologia", "url": "https://jamanetwork.com/rss/site_192/onlineFirst_184.xml" },
+    { "id": "nrcardio", "name": "Nature Reviews Cardiology", "group": "Top kardiologia", "url": "https://www.nature.com/nrcardio.rss" },
+    { "id": "natcvr", "name": "Nature Cardiovascular Research", "group": "Top kardiologia", "url": "https://www.nature.com/natcardiovascres.rss" },
+
+    { "id": "circres", "name": "Circulation Research", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=res" },
+    { "id": "jaha", "name": "Journal of the American Heart Association", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=jaha" },
+    { "id": "hyp", "name": "Hypertension", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=hyp" },
+    { "id": "circhf", "name": "Circulation: Heart Failure", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=circheartfailure" },
+    { "id": "circep", "name": "Circulation: Arrhythmia and Electrophysiology", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=circep" },
+    { "id": "circci", "name": "Circulation: Cardiovascular Interventions", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=circinterventions" },
+    { "id": "circimg", "name": "Circulation: Cardiovascular Imaging", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=circimaging" },
+    { "id": "circgen", "name": "Circulation: Genomic and Precision Medicine", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=circgen" },
+    { "id": "stroke", "name": "Stroke", "group": "AHA", "url": "https://www.ahajournals.org/action/showFeed?type=etoc&feed=rss&jc=str" },
+
+    { "id": "jchf", "name": "JACC: Heart Failure", "group": "JACC", "url": "https://www.jacc.org/action/showFeed?type=axatoc&feed=rss&jc=jchf" },
+    { "id": "jcin", "name": "JACC: Cardiovascular Interventions", "group": "JACC", "url": "https://www.jacc.org/action/showFeed?type=axatoc&feed=rss&jc=jcin" },
+    { "id": "jcmg", "name": "JACC: Cardiovascular Imaging", "group": "JACC", "url": "https://www.jacc.org/action/showFeed?type=axatoc&feed=rss&jc=jcmg" },
+    { "id": "jacep", "name": "JACC: Clinical Electrophysiology", "group": "JACC", "url": "https://www.jacc.org/action/showFeed?type=axatoc&feed=rss&jc=jacep" },
+    { "id": "jaccao", "name": "JACC: CardioOncology", "group": "JACC", "url": "https://www.jacc.org/action/showFeed?type=axatoc&feed=rss&jc=jaccao" },
+    { "id": "jacbts", "name": "JACC: Basic to Translational Science", "group": "JACC", "url": "https://www.jacc.org/action/showFeed?type=axatoc&feed=rss&jc=jacbts" },
+    { "id": "jacadv", "name": "JACC: Advances", "group": "JACC", "url": "https://www.jacc.org/action/showFeed?type=etoc&feed=rss&jc=jacadv", "noAbstract": true },
+
+    { "id": "europace", "name": "EP Europace", "group": "ESC", "url": "https://academic.oup.com/rss/site_5376/advanceAccess_3237.xml" },
+    { "id": "ehjci", "name": "EHJ – Cardiovascular Imaging", "group": "ESC", "url": "https://academic.oup.com/rss/site_5377/advanceAccess_3238.xml", "noAbstract": true },
+
+    { "id": "heart", "name": "Heart (BMJ)", "group": "BMJ", "url": "https://heart.bmj.com/rss/current.xml" },
+    { "id": "heart-of", "name": "Heart (BMJ) – Online First", "group": "BMJ", "url": "https://heart.bmj.com/rss/ahead.xml" },
+    { "id": "openheart", "name": "Open Heart (BMJ)", "group": "BMJ", "url": "https://openheart.bmj.com/rss/current.xml", "noAbstract": true },
+
+    { "id": "ijc", "name": "International Journal of Cardiology", "group": "Elsevier", "url": "https://rss.sciencedirect.com/publication/science/01675273", "dateInDescription": true },
+    { "id": "ajc", "name": "American Journal of Cardiology", "group": "Elsevier", "url": "https://rss.sciencedirect.com/publication/science/00029149", "dateInDescription": true, "noAbstract": true },
+    { "id": "ahj", "name": "American Heart Journal", "group": "Elsevier", "url": "https://rss.sciencedirect.com/publication/science/00028703", "dateInDescription": true },
+    { "id": "hrj", "name": "Heart Rhythm", "group": "Elsevier", "url": "https://rss.sciencedirect.com/publication/science/15475271", "dateInDescription": true, "noAbstract": true },
+    { "id": "jcf", "name": "Journal of Cardiac Failure", "group": "Elsevier", "url": "https://rss.sciencedirect.com/publication/science/10719164", "dateInDescription": true, "noAbstract": true },
+    { "id": "cjc", "name": "Canadian Journal of Cardiology", "group": "Elsevier", "url": "https://rss.sciencedirect.com/publication/science/0828282X", "dateInDescription": true },
+    { "id": "athero", "name": "Atherosclerosis", "group": "Elsevier", "url": "https://rss.sciencedirect.com/publication/science/00219150", "dateInDescription": true },
+    { "id": "jase", "name": "Journal of the American Society of Echocardiography", "group": "Elsevier", "url": "https://rss.sciencedirect.com/publication/science/08947317", "dateInDescription": true },
+
+    { "id": "ccvi", "name": "Catheterization and Cardiovascular Interventions", "group": "Wiley", "url": "https://onlinelibrary.wiley.com/feed/1522726X/most-recent", "noAbstract": true },
+    { "id": "clincardiol", "name": "Clinical Cardiology", "group": "Wiley", "url": "https://onlinelibrary.wiley.com/feed/19328737/most-recent", "noAbstract": true },
+
+    { "id": "kardiol-pol", "name": "Kardiologia Polska (Polish Heart Journal)", "group": "Polskie", "url": "https://journals.viamedica.pl/kardiologia_polska/gateway/plugin/WebFeedGatewayPlugin/rss2", "noAbstract": true },
+    { "id": "cardiol-j", "name": "Cardiology Journal (Via Medica)", "group": "Polskie", "url": "https://journals.viamedica.pl/cardiology_journal/gateway/plugin/WebFeedGatewayPlugin/rss2" },
+    { "id": "folia-cardiol", "name": "Folia Cardiologica", "group": "Polskie", "url": "https://journals.viamedica.pl/folia_cardiologica/gateway/plugin/WebFeedGatewayPlugin/rss2" },
+
+    { "id": "frontiers-cvm", "name": "Frontiers in Cardiovascular Medicine", "group": "Open Access", "url": "https://www.frontiersin.org/journals/cardiovascular-medicine/rss" },
+    { "id": "bmc-cvd", "name": "BMC Cardiovascular Disorders", "group": "Open Access", "url": "https://link.springer.com/search.rss?facet-journal-id=12872" },
+
+    { "id": "medrxiv-cv", "name": "medRxiv – Cardiovascular Medicine (preprinty)", "group": "Preprinty", "url": "https://connect.medrxiv.org/medrxiv_xml.php?subject=Cardiovascular_Medicine" }
+  ],
+  "api": [
+    { "id": "pubmed", "name": "PubMed E-utilities (nie RSS, ale działa i daje abstrakty)", "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=heart%20diseases%5Bmh%5D%20AND%20randomized%20controlled%20trial%5Bpt%5D&reldate=7&datetype=edat&retmode=json", "note": "esearch -> lista PMID, efetch -> abstrakty. Dowolne zapytanie MeSH, np. tylko RCT, meta-analizy, wytyczne." }
+  ],
+  "notWorking": [
+    { "name": "European Journal of Heart Failure, ESC Heart Failure, J Cardiovasc Electrophysiol (Wiley)", "reason": "404/403 – Wiley blokuje lub feed nie istnieje; zastępczo PubMed" },
+    { "name": "ATVB (AHA)", "reason": "404 – nie znaleziono kodu jc" },
+    { "name": "Circulation: CV Quality & Outcomes", "reason": "feed działa, ale ostatnia pozycja z 12.2025 (martwy)" },
+    { "name": "Cardiovascular Research, Eur J Preventive Cardiology, EHJ Acute CV Care, EHJ Digital Health (OUP)", "reason": "404 – nieznany ID feedu; zastępczo PubMed" },
+    { "name": "EuroIntervention, Postępy w Kardiologii Interwencyjnej", "reason": "brak RSS" },
+    { "name": "TCTMD, Medscape Cardiology", "reason": "403 – blokada botów (to i tak newsy, nie publikacje)" },
+    { "name": "PubMed RSS", "reason": "link RSS trzeba wygenerować w UI PubMed (Create RSS); lepiej użyć E-utilities" }
+  ]
+}

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0f17">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Nowe publikacje naukowe z kardiologii — PubMed i Elsevier">
+<title>Newsy Kardio</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+  :root {
+    --bg: #0c0f17; --bg2: #141927; --ink: #f3f4f8; --ink2: #c9cede; --muted: #7d859c; --line: #1d2232; --line2: #2a3042;
+    --red: #ff5252; --rct: #69f0ae; --meta: #b388ff; --guide: #ff8a80; --rev: #82b1ff; --star: #ffd54f;
+    --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overscroll-behavior-y: contain; }
+  button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; padding: 0; }
+  input { font: inherit; }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* nagłówek z poświatą */
+  .hero { padding: calc(18px + env(safe-area-inset-top)) 20px 10px;
+    background: radial-gradient(120% 100% at 0% 0%, rgba(229,57,53,.32), transparent 60%), radial-gradient(90% 90% at 100% 0%, rgba(124,77,255,.26), transparent 60%); }
+  .top { display: flex; align-items: center; gap: 4px; }
+  .logo { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 14px; letter-spacing: .16em; text-transform: uppercase; flex: 1; }
+  .logo i { width: 9px; height: 9px; border-radius: 50%; background: var(--red); box-shadow: 0 0 12px var(--red); }
+  .ib { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--ink2); }
+  .ib:active { background: rgba(255,255,255,.08); }
+  .spin svg { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 31px; line-height: 1.12; margin: 16px 0 6px; letter-spacing: -.005em; }
+  .stat { font-size: 13px; color: #9aa1b4; }
+  .stat b { color: #fff; font-weight: 650; }
+
+  /* pasek przyklejony: wyszukiwarka + chipy */
+  .bar { position: sticky; top: 0; z-index: 10; background: rgba(12,15,23,.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding-top: env(safe-area-inset-top); }
+  .search { padding: 8px 20px 0; display: none; }
+  .search.show { display: block; }
+  .search input { width: 100%; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line2); background: var(--bg2); color: var(--ink); font-size: 16px; outline: none; }
+  .search input:focus { border-color: #4a5270; }
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 20px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; font-size: 13px; padding: 6px 13px; border-radius: 999px; border: 1px solid var(--line2); color: #b8bfd0; white-space: nowrap; }
+  .chip.on { background: #fff; color: var(--bg); border-color: #fff; font-weight: 600; }
+  .chip .n { opacity: .6; margin-left: 4px; font-size: 12px; }
+  .vsep { flex: none; width: 1px; background: var(--line2); margin: 3px 2px; }
+
+  /* lista */
+  main { padding: 0 20px calc(110px + env(safe-area-inset-bottom)); }
+  .dayh { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #6e7690; margin: 22px 0 2px; font-weight: 700; display: flex; justify-content: space-between; }
+  .item { padding: 15px 0 10px; border-bottom: 1px solid var(--line); }
+  .kind { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: var(--c, #6e7690); display: flex; align-items: center; gap: 6px; }
+  .kind i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .item h3 { font-family: var(--serif); font-weight: 400; font-size: 18px; line-height: 1.32; margin: 6px 0 8px; }
+  .item h3 a { color: var(--ink); text-decoration: none; }
+  .item.read h3 a { color: #8890a6; }
+  .meta { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--muted); }
+  .meta .j { color: #a3aabd; font-weight: 600; }
+  .meta .t { flex: 1; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .acts { display: flex; align-items: center; gap: 2px; margin: 4px 0 0 -10px; font-size: 13px; }
+  .acts a, .acts button { color: #9fb2ff; text-decoration: none; padding: 8px 10px; border-radius: 8px; }
+  .acts a:active, .acts button:active { background: rgba(255,255,255,.06); }
+  .acts .na { color: #5d6479; padding: 8px 10px; }
+  .acts .sp { flex: 1; }
+  .acts .star { color: var(--muted); display: grid; place-items: center; }
+  .acts .star.on { color: var(--star); }
+  .acts .star.on svg { fill: currentColor; }
+  .abstract { font-size: 14.5px; line-height: 1.6; color: var(--ink2); white-space: pre-line; margin: 6px 0 6px; padding: 12px 14px; background: var(--bg2); border-radius: 12px; }
+  .empty { text-align: center; color: var(--muted); padding: 70px 20px; font-family: var(--serif); font-size: 18px; }
+  .more { display: block; margin: 22px auto 0; padding: 10px 22px; border-radius: 999px; border: 1px solid var(--line2); color: var(--ink2); }
+  .foot { text-align: center; color: #5d6479; font-size: 12px; margin-top: 22px; }
+  .foot button { color: #9fb2ff; font-size: 12px; }
+
+  /* pływający pasek */
+  .dock { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 15; display: flex; gap: 4px; padding: 6px;
+    background: rgba(30,35,50,.72); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  .dock button { display: flex; align-items: center; gap: 7px; font-size: 13.5px; padding: 9px 15px; border-radius: 999px; color: #c9cede; white-space: nowrap; }
+  .dock button.on { background: #fff; color: var(--bg); font-weight: 650; }
+  .dock svg { width: 17px; height: 17px; }
+  .dock .badge { min-width: 18px; height: 18px; border-radius: 9px; background: var(--red); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 5px; }
+
+  /* panel filtrów */
+  .sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 20; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; background: #121624; border-top: 1px solid var(--line2); border-radius: 24px 24px 0 0; max-height: 86vh; display: flex; flex-direction: column; transform: translateY(100%); transition: transform .28s cubic-bezier(.2,.8,.2,1); max-width: 680px; margin: 0 auto; }
+  .open .sheet-bg { opacity: 1; pointer-events: auto; }
+  .open .sheet { transform: none; }
+  .grab { width: 40px; height: 4px; border-radius: 2px; background: #3a4158; margin: 10px auto 0; }
+  .sheet-head { display: flex; align-items: center; padding: 12px 20px 6px; }
+  .sheet-head h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0; flex: 1; }
+  .sheet-head button { color: #9fb2ff; font-size: 14px; }
+  .sheet-body { overflow: auto; padding: 0 20px 12px; }
+  .sheet-body h4 { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #6e7690; margin: 20px 0 10px; font-weight: 700; }
+  .wrapchips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tog { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; font-size: 15px; border-bottom: 1px solid var(--line); color: var(--ink2); }
+  .sw { appearance: none; -webkit-appearance: none; width: 44px; height: 26px; border-radius: 13px; background: #2a3042; position: relative; transition: background .2s; cursor: pointer; flex: none; }
+  .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s; }
+  .sw:checked { background: var(--red); }
+  .sw:checked::after { transform: translateX(18px); }
+  select { width: 100%; padding: 11px 12px; border-radius: 12px; border: 1px solid var(--line2); background: var(--bg2); color: var(--ink); font: inherit; }
+  .sheet-foot { padding: 12px 20px calc(14px + env(safe-area-inset-bottom)); }
+  .sheet-foot button { width: 100%; padding: 14px; border-radius: 999px; background: #fff; color: var(--bg); font-weight: 700; font-size: 15px; }
+  .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #fff; color: var(--bg); padding: 9px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 600; z-index: 30; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="hero"><div class="wrap">
+  <div class="top">
+    <div class="logo"><i></i>Kardio</div>
+    <button class="ib" id="searchBtn" aria-label="Szukaj"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+    <button class="ib" id="refresh" aria-label="Odśwież"><svg class="i" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg></button>
+  </div>
+  <h1 id="title">Co nowego<br>w kardiologii</h1>
+  <div class="stat" id="stat">Ładowanie…</div>
+</div></div>
+
+<div class="bar"><div class="wrap">
+  <div class="search" id="searchBox"><input type="search" id="q" placeholder="Szukaj: TAVI, SGLT2, HFpEF…" enterkeyhint="search"></div>
+  <div class="chips" id="quick"></div>
+</div></div>
+
+<main class="wrap">
+  <div id="list"></div>
+  <div class="foot"><span id="status"></span><br><button id="markAll">Oznacz widoczne jako przeczytane</button></div>
+</main>
+
+<nav class="dock" id="dock"></nav>
+
+<div id="sheetRoot">
+  <div class="sheet-bg" id="sheetBg"></div>
+  <div class="sheet" role="dialog" aria-label="Filtry">
+    <div class="grab"></div>
+    <div class="sheet-head"><h2>Filtry</h2><button id="clear">Wyczyść</button></div>
+    <div class="sheet-body">
+      <label class="tog">Ukryj przeczytane <input type="checkbox" class="sw" id="hideRead"></label>
+      <label class="tog">Ukryj komentarze i listy <input type="checkbox" class="sw" id="hideComments"></label>
+      <h4>Typ publikacji</h4><div class="wrapchips" id="types"></div>
+      <h4>Temat</h4><div class="wrapchips" id="topics"></div>
+      <h4>Źródło</h4><div class="wrapchips" id="tiers"></div>
+      <h4>Czasopismo</h4><select id="journal"></select>
+    </div>
+    <div class="sheet-foot"><button id="apply">Pokaż</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const LS = { get: (k, d) => { try { return JSON.parse(localStorage.getItem('kardio.' + k)) ?? d; } catch { return d; } }, set: (k, v) => localStorage.setItem('kardio.' + k, JSON.stringify(v)) };
+const read = new Set(LS.get('read', [])), star = new Set(LS.get('star', []));
+const DEFAULTS = { period: 3, types: [], topics: [], tiers: [], journal: '', q: '', onlyHi: false, hideRead: false, onlyStar: false, hideComments: true };
+const state = Object.assign({}, DEFAULTS, LS.get('filters', {}));
+let all = [], shown = 60, lastFetch = null;
+
+const PERIODS = [[1, 'Dziś'], [3, '3 dni'], [7, 'Tydzień'], [30, 'Miesiąc']];
+const TYPE_ORDER = ['RCT', 'Meta-analiza', 'Wytyczne', 'Oryginalny', 'Przegląd', 'Opis przypadku', 'Komentarz'];
+const TIERS = ['Kluczowe czasopismo', 'Najważniejsze typy badań', 'Czasopismo ogólnomedyczne', 'Elsevier'];
+const KIND = { 'RCT': 'var(--rct)', 'Meta-analiza': 'var(--meta)', 'Wytyczne': 'var(--guide)', 'Przegląd': 'var(--rev)' };
+const ICON = {
+  list: '<svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
+  book: '<svg class="i" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  filt: '<svg class="i" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg>',
+};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const iso = d => d.toISOString().slice(0, 10);
+const fmtDay = d => {
+  if (!d) return 'Wcześniejsze · Elsevier';
+  const t = iso(new Date()), y = iso(new Date(Date.now() - 864e5));
+  if (d === t) return 'Dziś';
+  if (d === y) return 'Wczoraj';
+  return new Date(d + 'T12:00:00').toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' });
+};
+const toast = m => { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200); };
+const countBy = (list, f) => list.reduce((m, a) => ([].concat(f(a)).forEach(k => m[k] = (m[k] || 0) + 1), m), {});
+const plural = (n, a, b, c) => n === 1 ? a : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? b : c;
+
+function base() {
+  const q = state.q.trim().toLowerCase();
+  const since = state.period && !state.onlyStar ? iso(new Date(Date.now() - (state.period - 1) * 864e5)) : '';
+  return all.filter(a =>
+    (!since || (a.firstSeen && a.firstSeen.slice(0, 10) >= since) || (!a.firstSeen && state.period >= 7)) &&
+    (!state.onlyHi || a.highlight) &&
+    (!state.hideRead || !read.has(a.id)) &&
+    (!state.onlyStar || star.has(a.id)) &&
+    (!state.hideComments || a.type !== 'Komentarz') &&
+    (!state.journal || a.journalAbbr === state.journal) &&
+    (!q || (a.title + ' ' + a.abstract + ' ' + a.journal + ' ' + a.topics.join(' ')).toLowerCase().includes(q)));
+}
+const pass = (a, skip) =>
+  (skip === 'types' || !state.types.length || state.types.includes(a.type)) &&
+  (skip === 'topics' || !state.topics.length || state.topics.some(t => a.topics.includes(t))) &&
+  (skip === 'tiers' || !state.tiers.length || state.tiers.includes(a.tier));
+const activeFilters = () => state.types.length + state.topics.length + state.tiers.length + (state.journal ? 1 : 0) + (state.hideRead ? 1 : 0);
+
+function chipGroup(el, key, values, counts) {
+  el.innerHTML = values.filter(v => counts[v] || state[key].includes(v)).map(v => `<button class="chip ${state[key].includes(v) ? 'on' : ''}" data-v="${esc(v)}">${esc(v)}<span class="n">${counts[v] || 0}</span></button>`).join('') || '<span style="color:var(--muted);font-size:14px">brak</span>';
+  el.onclick = e => { const b = e.target.closest('.chip'); if (!b) return; const arr = state[key], v = b.dataset.v; arr.includes(v) ? arr.splice(arr.indexOf(v), 1) : arr.push(v); render(); };
+}
+
+function render() {
+  LS.set('filters', state);
+  const b = base();
+  const list = b.filter(a => pass(a)).sort((x, y) => (y.firstSeen || '').localeCompare(x.firstSeen || '') || (y.highlight - x.highlight));
+  const nf = activeFilters();
+  const hiCount = list.filter(a => a.highlight).length;
+
+  // nagłówek
+  $('#title').innerHTML = state.onlyStar ? 'Zapisane<br>publikacje' : 'Co nowego<br>w kardiologii';
+  $('#stat').innerHTML = `<b>${list.length}</b> ${plural(list.length, 'publikacja', 'publikacje', 'publikacji')} · <b>${hiCount}</b> ${plural(hiCount, 'najważniejsza', 'najważniejsze', 'najważniejszych')}` + (state.onlyStar ? '' : ` · <b>${list.filter(a => !read.has(a.id)).length}</b> nieprzeczytanych`);
+
+  // chipy szybkie
+  $('#quick').innerHTML = (state.onlyStar ? '' : PERIODS.map(([d, l]) => `<button class="chip ${state.period === d ? 'on' : ''}" data-period="${d}">${l}</button>`).join('') + '<span class="vsep"></span>') +
+    `<button class="chip ${state.onlyHi ? 'on' : ''}" data-tog="onlyHi">Najważniejsze</button>` +
+    state.topics.map(t => `<button class="chip on" data-rmtopic="${esc(t)}">${esc(t)} ✕</button>`).join('');
+
+  // dok
+  $('#dock').innerHTML =
+    `<button class="${!state.onlyStar ? 'on' : ''}" data-view="new">${ICON.list}Nowe</button>` +
+    `<button class="${state.onlyStar ? 'on' : ''}" data-view="star">${ICON.book}Zapisane${star.size ? ` <span class="badge">${star.size}</span>` : ''}</button>` +
+    `<button data-view="filters">${ICON.filt}Filtry${nf ? ` <span class="badge">${nf}</span>` : ''}</button>`;
+
+  // panel filtrów
+  chipGroup($('#types'), 'types', TYPE_ORDER, countBy(b.filter(a => pass(a, 'types')), a => a.type));
+  const tc = countBy(b.filter(a => pass(a, 'topics')), a => a.topics);
+  chipGroup($('#topics'), 'topics', Object.keys(tc).concat(state.topics.filter(t => !tc[t])).sort((x, y) => (tc[y] || 0) - (tc[x] || 0)), tc);
+  chipGroup($('#tiers'), 'tiers', TIERS, countBy(b.filter(a => pass(a, 'tiers')), a => a.tier));
+  $('#hideRead').checked = state.hideRead; $('#hideComments').checked = state.hideComments;
+  $('#apply').textContent = `Pokaż ${list.length} ${plural(list.length, 'publikację', 'publikacje', 'publikacji')}`;
+
+  if (!list.length) {
+    $('#list').innerHTML = `<div class="empty">${state.onlyStar ? 'Nie masz jeszcze zapisanych publikacji.<br><small style="font-family:system-ui;font-size:13px">Dotknij zakładki przy artykule, aby go zapisać.</small>' : all.length ? 'Brak publikacji dla wybranych filtrów.' : 'Brak danych.'}</div>`;
+    return;
+  }
+  let html = '', lastDay;
+  const dayCounts = countBy(list, a => a.firstSeen ? a.firstSeen.slice(0, 10) : '');
+  for (const a of list.slice(0, shown)) {
+    const d = a.firstSeen ? a.firstSeen.slice(0, 10) : '';
+    if (d !== lastDay) { html += `<div class="dayh"><span>${esc(fmtDay(d))}</span><span>${dayCounts[d]}</span></div>`; lastDay = d; }
+    html += `<div class="item ${read.has(a.id) ? 'read' : ''}" data-id="${a.id}">
+      <div class="kind" style="--c:${KIND[a.type] || '#6e7690'}"><i></i>${esc(a.type)}</div>
+      <h3><a href="${esc(a.url)}" target="_blank" rel="noopener" data-open>${esc(a.title)}</a></h3>
+      <div class="meta"><span class="j">${esc(a.journalAbbr || a.journal)}</span><span class="t">${esc(a.topics.slice(0, 2).join(' · '))}</span></div>
+      <div class="acts">
+        ${a.abstract ? '<button data-abs>Abstrakt</button>' : '<span class="na">bez abstraktu</span>'}
+        ${a.pubmedUrl ? `<a href="${esc(a.pubmedUrl)}" target="_blank" rel="noopener" data-open>PubMed</a>` : ''}
+        <span class="sp"></span>
+        <button class="star ${star.has(a.id) ? 'on' : ''}" data-star aria-label="Zapisz">${ICON.book}</button>
+      </div></div>`;
+  }
+  if (list.length > shown) html += `<button class="more" id="more">Pokaż więcej · ${list.length - shown}</button>`;
+  $('#list').innerHTML = html;
+}
+
+// --- zdarzenia ---
+$('#quick').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.period) state.period = +b.dataset.period;
+  else if (b.dataset.tog) state[b.dataset.tog] = !state[b.dataset.tog];
+  else if (b.dataset.rmtopic) state.topics.splice(state.topics.indexOf(b.dataset.rmtopic), 1);
+  shown = 60; render();
+};
+$('#dock').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const v = b.dataset.view;
+  if (v === 'filters') return openSheet(true);
+  state.onlyStar = v === 'star'; shown = 60; render(); scrollTo({ top: 0, behavior: 'smooth' });
+};
+function openSheet(on) { $('#sheetRoot').classList.toggle('open', on); document.body.style.overflow = on ? 'hidden' : ''; }
+$('#sheetBg').onclick = () => openSheet(false);
+$('#apply').onclick = () => { openSheet(false); shown = 60; scrollTo({ top: 0 }); };
+$('#clear').onclick = () => { Object.assign(state, { types: [], topics: [], tiers: [], journal: '', hideRead: false }); $('#journal').value = ''; render(); };
+$('#hideRead').onchange = e => { state.hideRead = e.target.checked; render(); };
+$('#hideComments').onchange = e => { state.hideComments = e.target.checked; render(); };
+$('#journal').onchange = e => { state.journal = e.target.value; render(); };
+$('#searchBtn').onclick = () => { const box = $('#searchBox'); const show = !box.classList.contains('show'); box.classList.toggle('show', show); if (show) { $('#q').focus(); } else if (state.q) { state.q = ''; $('#q').value = ''; render(); } };
+let qt; $('#q').value = state.q; if (state.q) $('#searchBox').classList.add('show');
+$('#q').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { state.q = e.target.value; shown = 60; render(); }, 250); };
+$('#markAll').onclick = () => { document.querySelectorAll('.item').forEach(el => read.add(el.dataset.id)); LS.set('read', [...read]); render(); toast('Oznaczono jako przeczytane'); };
+
+$('#list').onclick = e => {
+  if (e.target.id === 'more') { shown += 60; return render(); }
+  const el = e.target.closest('.item'); if (!el) return;
+  const id = el.dataset.id, a = all.find(x => x.id === id);
+  const btn = e.target.closest('button, a');
+  if (!btn) return;
+  if (btn.matches('[data-abs]')) {
+    const ex = el.querySelector('.abstract');
+    if (ex) { ex.remove(); btn.textContent = 'Abstrakt'; }
+    else { el.querySelector('.acts').insertAdjacentHTML('beforebegin', `<div class="abstract">${esc(a.abstract)}</div>`); btn.textContent = 'Zwiń'; read.add(id); LS.set('read', [...read]); el.classList.add('read'); }
+  } else if (btn.matches('[data-star]')) {
+    star.has(id) ? star.delete(id) : star.add(id); LS.set('star', [...star]);
+    const saved = LS.get('savedItems', {}); if (star.has(id)) saved[id] = a; else delete saved[id]; LS.set('savedItems', saved);
+    btn.classList.toggle('on', star.has(id));
+    toast(star.has(id) ? 'Zapisano' : 'Usunięto z zapisanych');
+    if (state.onlyStar && !star.has(id)) render(); else { const n = $('#dock [data-view="star"]'); n.innerHTML = `${ICON.book}Zapisane${star.size ? ` <span class="badge">${star.size}</span>` : ''}`; }
+  } else if (btn.matches('[data-open]')) {
+    read.add(id); LS.set('read', [...read]); el.classList.add('read');
+  }
+};
+
+// --- dane ---
+async function load(fresh) {
+  const r = await fetch('data/articles.json' + (fresh ? '?t=' + Date.now() : ''), { cache: fresh ? 'no-store' : 'default' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const d = await r.json();
+  all = d.articles || []; lastFetch = d.lastFetch;
+  // zapisane artykuły zostają, nawet gdy wypadną z bazy
+  const saved = LS.get('savedItems', {});
+  for (const id of star) { const a = all.find(x => x.id === id); if (a) saved[id] = a; else if (saved[id]) all.push(saved[id]); }
+  for (const id of Object.keys(saved)) if (!star.has(id)) delete saved[id];
+  LS.set('savedItems', saved);
+  const journals = [...new Set(all.map(a => a.journalAbbr).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  $('#journal').innerHTML = `<option value="">Wszystkie (${journals.length})</option>` + journals.map(j => `<option ${j === state.journal ? 'selected' : ''}>${esc(j)}</option>`).join('');
+  $('#status').textContent = lastFetch ? 'Dane z ' + new Date(lastFetch).toLocaleString('pl-PL', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+  render();
+}
+$('#refresh').onclick = async () => {
+  const b = $('#refresh'); b.classList.add('spin');
+  try {
+    // lokalnie (node server.mjs) wymusza pobranie; na GitHub Pages dane odświeżają się same co kilka godzin
+    const r = await fetch('api/refresh', { method: 'POST' }).catch(() => null);
+    const before = lastFetch;
+    await load(true);
+    toast(r && r.ok ? 'Pobrano nowe publikacje' : lastFetch !== before ? 'Zaktualizowano' : 'Dane są aktualne');
+  } catch { toast('Brak połączenia — pokazuję zapisane dane'); }
+  b.classList.remove('spin');
+};
+load().catch(() => { $('#stat').textContent = 'Nie udało się wczytać danych'; });
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>

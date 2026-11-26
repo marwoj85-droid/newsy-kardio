@@ -1,0 +1,68 @@
+# Co 4 godziny: pobiera nowe publikacje (PubMed + Elsevier) i publikuje aplikację na GitHub Pages.
+name: Aktualizacja publikacji
+
+on:
+  schedule:
+    - cron: '15 */4 * * *'
+  workflow_dispatch:   # ręczne uruchomienie z zakładki Actions
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Adres strony
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Pobierz poprzednie dane z opublikowanej strony
+        run: |
+          mkdir -p data
+          curl -fsSL "${{ steps.pages.outputs.base_url }}/data/articles.json" -o data/articles.json \
+            || echo "Brak poprzednich danych — pierwsze uruchomienie"
+
+      - name: Pobierz nowe publikacje
+        run: node lib/fetch.mjs
+
+      - name: Złóż stronę
+        run: |
+          mkdir -p public/data
+          cp data/articles.json public/data/articles.json
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Publikuj
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      # GitHub wyłącza harmonogram po 60 dniach bez zmian w repozytorium — raz w tygodniu mały commit
+      - name: Podtrzymanie harmonogramu
+        if: github.event_name == 'schedule'
+        run: |
+          if [ "$(date -u +%u%H)" = "100" ]; then
+            date -u > .last-run
+            git config user.name "github-actions[bot]"
+            git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+            git add .last-run && git commit -m "Podtrzymanie harmonogramu" && git push || true
+          fi

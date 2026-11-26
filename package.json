@@ -1,0 +1,12 @@
+{
+  "name": "newsy-kardio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Przegląd nowych publikacji z kardiologii (PubMed + Elsevier RSS)",
+  "scripts": {
+    "start": "node server.mjs",
+    "fetch": "node lib/fetch.mjs"
+  },
+  "engines": { "node": ">=18" }
+}
