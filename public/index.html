@@ -55,6 +55,18 @@
   main { padding: 0 20px calc(110px + env(safe-area-inset-bottom)); }
   .dayh { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #6e7690; margin: 22px 0 2px; font-weight: 700; display: flex; justify-content: space-between; }
   .item { padding: 15px 0 10px; border-bottom: 1px solid var(--line); }
+  .stars { margin-left: auto; color: var(--star); letter-spacing: .06em; font-size: 12px; }
+  .stars span { color: #2f3549; }
+  .why { font-size: 12.5px; color: #c9b27a; margin: -2px 0 6px; }
+  /* sekcja Najważniejsze */
+  .topsec { margin: 18px -12px 6px; padding: 6px 12px 2px; border-radius: 18px; background: linear-gradient(160deg, rgba(255,82,82,.10), rgba(124,77,255,.08) 60%, transparent); border: 1px solid #252b3d; }
+  .toph { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0 0; }
+  .toph span:first-child { font-family: var(--serif); font-size: 22px; }
+  .toph span:last-child { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #6e7690; font-weight: 700; }
+  .item.ranked { display: flex; gap: 12px; }
+  .item.ranked:last-child { border-bottom: 0; }
+  .item.ranked .body { flex: 1; min-width: 0; }
+  .rank { font-family: var(--serif); font-size: 30px; line-height: 1; color: #ff8a80; min-width: 22px; padding-top: 2px; opacity: .9; }
   .kind { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; color: var(--c, #6e7690); display: flex; align-items: center; gap: 6px; }
   .kind i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
   .item h3 { font-family: var(--serif); font-weight: 400; font-size: 18px; line-height: 1.32; margin: 6px 0 8px; }
@@ -228,7 +240,8 @@ function chipGroup(el, key, values, counts) {
 function render() {
   LS.set('filters', state);
   const b = base();
-  const list = b.filter(a => pass(a)).sort((x, y) => (y.firstSeen || '').localeCompare(x.firstSeen || '') || (y.highlight - x.highlight));
+  // w obrębie dnia: od najwyżej ocenionych
+  const list = b.filter(a => pass(a)).sort((x, y) => (y.firstSeen || '').slice(0, 10).localeCompare((x.firstSeen || '').slice(0, 10)) || ((y.score || 0) - (x.score || 0)));
   const nf = activeFilters();
   const hiCount = list.filter(a => a.highlight).length;
 
@@ -260,23 +273,47 @@ function render() {
     return;
   }
   let html = '', lastDay;
-  const dayCounts = countBy(list, a => a.firstSeen ? a.firstSeen.slice(0, 10) : '');
-  for (const a of list.slice(0, shown)) {
+
+  // Najważniejsze: ranking punktowy w wybranym okresie (z uwzględnieniem filtrów)
+  const topIds = new Set();
+  if (!state.onlyStar && !state.q.trim()) {
+    const top = list.filter(a => (a.score || 0) >= TOP_MIN).sort((x, y) => y.score - x.score).slice(0, TOP_N);
+    if (top.length) {
+      const per = PERIODS.find(p => p[0] === state.period);
+      html += `<section class="topsec"><div class="toph"><span>Najważniejsze</span><span>${per ? (state.period === 1 ? 'dziś' : per[1].toLowerCase()) : ''}</span></div>`;
+      top.forEach((a, i) => { topIds.add(a.id); html += itemHtml(a, i + 1); });
+      html += `</section>`;
+    }
+  }
+
+  const rest = list.filter(a => !topIds.has(a.id));
+  const dayCounts = countBy(rest, a => a.firstSeen ? a.firstSeen.slice(0, 10) : '');
+  for (const a of rest.slice(0, shown)) {
     const d = a.firstSeen ? a.firstSeen.slice(0, 10) : '';
     if (d !== lastDay) { html += `<div class="dayh"><span>${esc(fmtDay(d))}</span><span>${dayCounts[d]}</span></div>`; lastDay = d; }
-    html += `<div class="item ${read.has(a.id) ? 'read' : ''}" data-id="${a.id}">
-      <div class="kind" style="--c:${KIND[a.type] || '#6e7690'}"><i></i>${esc(a.type)}</div>
-      <h3><a href="${esc(a.url)}" target="_blank" rel="noopener" data-open>${esc(a.title)}</a></h3>
-      <div class="meta"><span class="j">${esc(a.journalAbbr || a.journal)}</span><span class="t">${esc(a.topics.slice(0, 2).join(' · '))}</span></div>
-      <div class="acts">
-        ${a.abstract ? '<button data-abs>Abstrakt</button>' : '<span class="na">bez abstraktu</span>'}
-        ${a.pubmedUrl ? `<a href="${esc(a.pubmedUrl)}" target="_blank" rel="noopener" data-open>PubMed</a>` : ''}
-        <span class="sp"></span>
-        <button class="star ${star.has(a.id) ? 'on' : ''}" data-star aria-label="Zapisz">${ICON.book}</button>
-      </div></div>`;
+    html += itemHtml(a);
   }
-  if (list.length > shown) html += `<button class="more" id="more">Pokaż więcej · ${list.length - shown}</button>`;
+  if (rest.length > shown) html += `<button class="more" id="more">Pokaż więcej · ${rest.length - shown}</button>`;
   $('#list').innerHTML = html;
+}
+
+const TOP_N = 8, TOP_MIN = 40;
+function itemHtml(a, rank) {
+  const stars = a.stars ? `<span class="stars" title="Ocena ${a.score} pkt">${'★'.repeat(a.stars)}<span>${'★'.repeat(3 - a.stars)}</span></span>` : '';
+  const reasons = (a.reasons || []).filter(r => r !== a.journalAbbr);
+  return `<div class="item ${rank ? 'ranked' : ''} ${read.has(a.id) ? 'read' : ''}" data-id="${a.id}">
+    ${rank ? `<div class="rank">${rank}</div>` : ''}
+    <div class="body">
+    <div class="kind" style="--c:${KIND[a.type] || '#6e7690'}"><i></i>${esc(a.type)}${stars}</div>
+    <h3><a href="${esc(a.url)}" target="_blank" rel="noopener" data-open>${esc(a.title)}</a></h3>
+    ${reasons.length ? `<div class="why">${esc(reasons.join(' · '))}</div>` : ''}
+    <div class="meta"><span class="j">${esc(a.journalAbbr || a.journal)}</span><span class="t">${esc(a.topics.slice(0, 2).join(' · '))}</span></div>
+    <div class="acts">
+      ${a.abstract ? '<button data-abs>Abstrakt</button>' : '<span class="na">bez abstraktu</span>'}
+      ${a.pubmedUrl ? `<a href="${esc(a.pubmedUrl)}" target="_blank" rel="noopener" data-open>PubMed</a>` : ''}
+      <span class="sp"></span>
+      <button class="star ${star.has(a.id) ? 'on' : ''}" data-star aria-label="Zapisz">${ICON.book}</button>
+    </div></div></div>`;
 }
 
 // --- zdarzenia ---
