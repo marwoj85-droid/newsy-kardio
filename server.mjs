@@ -27,8 +27,8 @@ http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   try {
     if (url.pathname === '/api/refresh' && req.method === 'POST') return send(res, 200, JSON.stringify(await refresh()));
-    const file = url.pathname === '/data/articles.json'
-      ? path.join(ROOT, 'data', 'articles.json')
+    const file = url.pathname.startsWith('/data/')
+      ? path.join(ROOT, 'data', path.basename(url.pathname))
       : path.join(PUBLIC, path.normalize(decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname)));
     if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) return send(res, 404, '{"error":"not found"}');
     send(res, 200, fs.readFileSync(file), TYPES[path.extname(file)] || 'application/octet-stream');

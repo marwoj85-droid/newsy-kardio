@@ -107,6 +107,19 @@
   .sheet-foot button { width: 100%; padding: 14px; border-radius: 999px; background: #fff; color: var(--bg); font-weight: 700; font-size: 15px; }
   .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #fff; color: var(--bg); padding: 9px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 600; z-index: 30; opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap; }
   .toast.show { opacity: 1; }
+
+  /* ekran hasła */
+  .lock { position: fixed; inset: 0; z-index: 50; display: none; flex-direction: column; justify-content: center; padding: 30px 28px calc(30px + env(safe-area-inset-bottom));
+    background: radial-gradient(120% 70% at 0% 0%, rgba(229,57,53,.32), transparent 60%), radial-gradient(90% 60% at 100% 0%, rgba(124,77,255,.26), transparent 60%), var(--bg); }
+  .lock.show { display: flex; }
+  .lock .in { max-width: 380px; width: 100%; margin: 0 auto; }
+  .lock h1 { margin: 22px 0 8px; }
+  .lock p { color: #9aa1b4; font-size: 14px; margin: 0 0 22px; }
+  .lock input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line2); background: var(--bg2); color: var(--ink); font-size: 16px; outline: none; }
+  .lock input:focus { border-color: #4a5270; }
+  .lock button { width: 100%; margin-top: 12px; padding: 14px; border-radius: 999px; background: #fff; color: var(--bg); font-weight: 700; font-size: 15px; }
+  .lock button:disabled { opacity: .6; }
+  .lock .err { color: var(--guide); font-size: 13.5px; min-height: 20px; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -127,7 +140,7 @@
 
 <main class="wrap">
   <div id="list"></div>
-  <div class="foot"><span id="status"></span><br><button id="markAll">Oznacz widoczne jako przeczytane</button></div>
+  <div class="foot"><span id="status"></span><br><button id="markAll">Oznacz widoczne jako przeczytane</button> · <button id="logout">Wyloguj</button></div>
 </main>
 
 <nav class="dock" id="dock"></nav>
@@ -149,6 +162,15 @@
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
+<div class="lock" id="lock"><form class="in" id="lockForm">
+  <div class="logo"><i></i>Kardio</div>
+  <h1>Dostęp<br>chroniony hasłem</h1>
+  <p>Wpisz hasło, aby odczytać publikacje. Telefon je zapamięta.</p>
+  <input type="password" id="pw" autocomplete="current-password" placeholder="Hasło" required>
+  <button type="submit" id="pwBtn">Otwórz</button>
+  <div class="err" id="pwErr"></div>
+</form></div>
 
 <script>
 const $ = s => document.querySelector(s);
@@ -304,11 +326,51 @@ $('#list').onclick = e => {
   }
 };
 
-// --- dane ---
+// --- dane (zaszyfrowane hasłem: PBKDF2-SHA256 + AES-256-GCM, gzip) ---
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function decryptData(enc, password) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: unb64(enc.salt), iterations: enc.iter }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  const gz = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(enc.iv) }, key, unb64(enc.data));
+  return JSON.parse(await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
+}
+class NeedPassword extends Error {}
+let encCache = null;
+async function fetchData(fresh) {
+  const opt = { cache: fresh ? 'no-store' : 'default' }, t = fresh ? '?t=' + Date.now() : '';
+  const r = await fetch('data/articles.enc.json' + t, opt);
+  if (r.ok) {
+    encCache = await r.json();
+    const pw = localStorage.getItem('kardio.pw');
+    if (!pw) throw new NeedPassword();
+    try { return await decryptData(encCache, pw); } catch { localStorage.removeItem('kardio.pw'); throw new NeedPassword(); }
+  }
+  // tylko lokalnie (node server.mjs bez szyfrowania)
+  const p = await fetch('data/articles.json' + t, opt);
+  if (!p.ok) throw new Error('HTTP ' + r.status);
+  return p.json();
+}
+function showLock(msg) { $('#lock').classList.add('show'); $('#pwErr').textContent = msg || ''; setTimeout(() => $('#pw').focus(), 50); }
+$('#lockForm').onsubmit = async e => {
+  e.preventDefault();
+  const pw = $('#pw').value; $('#pwBtn').disabled = true; $('#pwErr').textContent = '';
+  try {
+    if (!encCache) encCache = await (await fetch('data/articles.enc.json')).json();
+    const d = await decryptData(encCache, pw);
+    localStorage.setItem('kardio.pw', pw); $('#pw').value = '';
+    $('#lock').classList.remove('show'); applyData(d);
+  } catch { $('#pwErr').textContent = 'Nieprawidłowe hasło.'; }
+  $('#pwBtn').disabled = false;
+};
+$('#logout').onclick = () => { localStorage.removeItem('kardio.pw'); all = []; render(); showLock(); };
+
 async function load(fresh) {
-  const r = await fetch('data/articles.json' + (fresh ? '?t=' + Date.now() : ''), { cache: fresh ? 'no-store' : 'default' });
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  const d = await r.json();
+  let d;
+  try { d = await fetchData(fresh); }
+  catch (e) { if (e instanceof NeedPassword) return showLock(); throw e; }
+  applyData(d);
+}
+function applyData(d) {
   all = d.articles || []; lastFetch = d.lastFetch;
   // zapisane artykuły zostają, nawet gdy wypadną z bazy
   const saved = LS.get('savedItems', {});

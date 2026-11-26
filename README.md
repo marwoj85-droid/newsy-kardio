@@ -16,6 +16,14 @@ Aplikacja na telefon (PWA) z nowymi publikacjami naukowymi z kardiologii: PubMed
 3. W repozytorium: **Settings → Pages → Source: GitHub Actions**.
 4. **Actions → Aktualizacja publikacji → Run workflow**. Po ok. 2 minutach aplikacja jest pod adresem z kroku powyżej.
 
+## Hasło
+
+Dane na stronie są zaszyfrowane (AES-256-GCM, klucz z hasła przez PBKDF2). Bez hasła widać tylko ekran logowania.
+
+- Hasło ustawia się w repozytorium: **Settings → Secrets and variables → Actions → New repository secret**, nazwa `KARDIO_PASSWORD`.
+- Zmiana hasła: zmień secret i uruchom workflow ręcznie; w telefonie wpisz nowe hasło (stare przestanie działać). Historia danych zacznie się wtedy od nowa (14 dni wstecz).
+- „Wyloguj” na dole listy usuwa zapamiętane hasło z telefonu.
+
 ## Co jest pobierane
 
 - **PubMed** (`config.json` → `pubmed`):

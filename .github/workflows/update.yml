@@ -34,19 +34,40 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Pobierz poprzednie dane z opublikowanej strony
+      - name: Sprawdź hasło
+        env:
+          KARDIO_PASSWORD: ${{ secrets.KARDIO_PASSWORD }}
+        run: |
+          if [ -z "$KARDIO_PASSWORD" ]; then
+            echo "::error::Brak hasła. Dodaj secret KARDIO_PASSWORD: Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - name: Pobierz poprzednie (zaszyfrowane) dane z opublikowanej strony
+        env:
+          KARDIO_PASSWORD: ${{ secrets.KARDIO_PASSWORD }}
         run: |
           mkdir -p data
-          curl -fsSL "${{ steps.pages.outputs.base_url }}/data/articles.json" -o data/articles.json \
-            || echo "Brak poprzednich danych — pierwsze uruchomienie"
+          BASE="${{ steps.pages.outputs.base_url }}"
+          if curl -fsSL "$BASE/data/articles.enc.json" -o data/prev.enc.json; then
+            node scripts/crypt.mjs decrypt data/prev.enc.json data/articles.json \
+              || { echo "Poprzednich danych nie da się odszyfrować (zmienione hasło?) — zaczynam od nowa"; rm -f data/articles.json; }
+          elif curl -fsSL "$BASE/data/articles.json" -o data/articles.json; then
+            echo "Przejście z danych nieszyfrowanych"
+          else
+            echo "Brak poprzednich danych — pierwsze uruchomienie"
+          fi
 
       - name: Pobierz nowe publikacje
         run: node lib/fetch.mjs
 
-      - name: Złóż stronę
+      - name: Zaszyfruj dane i złóż stronę
+        env:
+          KARDIO_PASSWORD: ${{ secrets.KARDIO_PASSWORD }}
         run: |
-          mkdir -p public/data
-          cp data/articles.json public/data/articles.json
+          rm -rf public/data
+          node scripts/crypt.mjs encrypt data/articles.json public/data/articles.enc.json
+          ls -la public/data
 
       - uses: actions/upload-pages-artifact@v3
         with:
