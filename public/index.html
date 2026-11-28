@@ -277,7 +277,9 @@ function render() {
   // Najważniejsze: ranking punktowy w wybranym okresie (z uwzględnieniem filtrów)
   const topIds = new Set();
   if (!state.onlyStar && !state.q.trim()) {
-    const top = list.filter(a => (a.score || 0) >= TOP_MIN).sort((x, y) => y.score - x.score).slice(0, TOP_N);
+    // profil: 10 na dzień, dla dłuższych okresów najwyżej 20
+    const topN = Math.min(TOP_MAX, TOP_PER_DAY * (state.period || 30));
+    const top = list.filter(a => (a.score || 0) >= TOP_MIN).sort((x, y) => y.score - x.score).slice(0, topN);
     if (top.length) {
       const per = PERIODS.find(p => p[0] === state.period);
       html += `<section class="topsec"><div class="toph"><span>Najważniejsze</span><span>${per ? (state.period === 1 ? 'dziś' : per[1].toLowerCase()) : ''}</span></div>`;
@@ -297,7 +299,7 @@ function render() {
   $('#list').innerHTML = html;
 }
 
-const TOP_N = 8, TOP_MIN = 40;
+const TOP_PER_DAY = 10, TOP_MAX = 20, TOP_MIN = 40;
 function itemHtml(a, rank) {
   const stars = a.stars ? `<span class="stars" title="Ocena ${a.score} pkt">${'★'.repeat(a.stars)}<span>${'★'.repeat(3 - a.stars)}</span></span>` : '';
   const reasons = (a.reasons || []).filter(r => r !== a.journalAbbr);

@@ -1,0 +1,68 @@
+{
+  "_info": "Wagi profilu osobistego dla rankingu (lib/score.mjs). Opis słowami: profil-zawodowy.md. Wyrażenia regularne bez rozróżniania wielkości liter, sprawdzane na tytule + abstrakcie.",
+
+  "_areas": "Pełne punkty, gdy dziedzina jest w tytule; gdy tylko w abstrakcie — połowa (abstractFactor). Czasopisma spoza listy rankingu dostają połowę bonusu (unknownJournalFactor).",
+  "abstractFactor": 0.5,
+  "unknownJournalFactor": 0.5,
+
+  "core": {
+    "points": 22,
+    "bothBonus": 5,
+    "areas": {
+      "Lipidy": "\\b(lipids?|lipid-lowering|lipoproteins?|ldl|ldl-c|hdl|apob|apolipoprotein|cholesterol|hypercholesterol\\w*|dyslipid\\w*|hyperlipid\\w*|triglycerid\\w*|statins?|rosuvastatin|atorvastatin|ezetimibe|pcsk9|evolocumab|alirocumab|inclisiran|bempedoic|evinacumab|obicetrapib|cetp|lp\\(a\\)|lipoprotein\\(a\\)|familial hypercholesterol\\w*|apheresis|olpasiran|pelacarsen|lepodisiran|zerlasiran|muvalaplin|angptl3|icosapent|omega-3)\\b",
+      "Prewencja": "\\b(primary prevention|secondary prevention|cardiovascular prevention|preventive cardiology|prevention of (cardiovascular|atherosclerotic|coronary)|cardiovascular risk (assessment|estimation|prediction|stratification|factors?)|risk prediction|risk scores?|score2|prevent equations?|coronary artery calcium|calcium scor\\w*|lifestyle (intervention|modification)s?|physical activity|exercise training|smoking cessation|cardiac rehabilitation|polypill|mediterranean diet|dietary pattern|healthy lifestyle|life's essential 8)\\b",
+      "Echokardiografia": "(echocardiogra\\w*|\\becho\\b|transthoracic|transo?esophageal|\\btte\\b|\\btee\\b|speckle|\\bstrain\\b|\\bgls\\b|three-dimensional echo|\\b3d echo|stress echo|dobutamine stress|diastolic (function|dysfunction)|point-of-care ultrasound|\\bpocus\\b)"
+    }
+  },
+
+  "secondary": {
+    "points": 10,
+    "areas": {
+      "Kardiometabolizm": "\\b(diabet\\w*|sglt2\\w*|\\w*gliflozin|glp-1|semaglutide|tirzepatide|retatrutide|orforglipron|obesity|cardiometabolic|metabolic syndrome|insulin resistance|cardio-kidney|cardiovascular-kidney-metabolic|chronic kidney disease|masld|nafld|fatty liver)\\b",
+      "Wady zastawkowe": "\\b(valv\\w*|aortic stenosis|aortic regurgitation|mitral|tricuspid|endocarditis|tavi|tavr|edge-to-edge|teer)\\b",
+      "Ostra kardiologia": "\\b(acute coronary|myocardial infarction|stemi|nstemi|cardiogenic shock|cardiac arrest|resuscitation|intensive (cardiac )?care|coronary care unit|cardiac intensive|cicu|ccu|mechanical circulatory|impella|ecmo|va-ecmo|extracorporeal|intra-aortic|acute heart failure|acute decompensated|pulmonary embolism|takotsubo|myocarditis|aortic dissection|tamponade)\\b"
+    }
+  },
+
+  "procedures": {
+    "points": 5,
+    "label": "Twoje badania",
+    "re": "\\b(exercise (stress )?test\\w*|exercise ecg|exercise electrocardiogra\\w*|treadmill|cardiopulmonary exercise|holter|ambulatory (ecg|electrocardiogra\\w*)|lipoprotein apheresis|ldl apheresis)\\b"
+  },
+
+  "penalties": {
+    "basicScience": -20,
+    "protocol": -15,
+    "outOfCardiology": -25,
+    "pediatricTitle": -25,
+    "pediatricRe": "\\b(pediatric|paediatric|children|childhood|infants?|neonat\\w*|newborns?|adolescents?|fetal|foetal|fetus|kawasaki|preterm)\\b",
+    "_outOfCardiology": "Kara tylko poza czasopismami kardiologicznymi (cardioJournalRe) i gdy tekst nie ma słów z cardioRe.",
+    "cardioJournalRe": "(\\bcard|heart|circ|atheroscl|arterioscler|europace|eurointervention|hypertens|stroke|jacc|thromb|vasc|echocardiogr|kardiol|rhythm|lipid)",
+    "cardioRe": "(cardi|heart|coronar|myocard|atri(al|um)|ventric|aort|valv|mitral|tricuspid|vascul|arter|venous|hypertens|blood pressure|lipid|cholesterol|lipoprotein|triglycerid|ather|plaque|platelet|thromb|embol|stroke|infarct|isch(a)?em|angina|arrhythm|fibrillation|ablation|pericard|endocard|\\becg\\b|\\bqrs\\b|\\bqtc?\\b|electrocardiogra|echo|statin|anticoag|circulat|ha?emodynam|syncope|shock|\\bpci\\b|stent|tavi|tavr|stemi|\\bcto\\b|\\bcabg\\b|pacemaker|\\bicd\\b|endothel|angiogra|revasculari)"
+  },
+
+  "types": {
+    "points": { "Przegląd": 14 },
+    "reviewInProfile": 10,
+    "educational": 5,
+    "educationalRe": "\\b(state[- ]of[- ]the[- ]art|how to|practical|primer|tutorial|step-by-step|clinician'?s guide|review of the literature|update on)\\b",
+    "realWorld": 8,
+    "realWorldRe": "\\b(registry|registries|real-world|real world|nationwide|population-based|claims data|electronic health records?|routine (clinical )?practice)\\b"
+  },
+
+  "sources": {
+    "european": 5,
+    "europeanJournals": ["Eur Heart J", "Eur J Heart Fail", "Europace", "Eur Heart J Cardiovasc Imaging", "Eur J Prev Cardiol", "Cardiovasc Res", "EuroIntervention", "ESC Heart Fail", "Eur Heart J Acute Cardiovasc Care", "Eur Heart J Qual Care Clin Outcomes", "Eur Heart J Valvular Struct Heart Dis", "Eur Heart J Digit Health", "Atherosclerosis", "Heart", "Clin Res Cardiol", "Lancet Reg Health Eur", "Eur J Intern Med", "Eur J Clin Invest", "Neth Heart J", "Rev Esp Cardiol (Engl Ed)"],
+    "polish": 10,
+    "polishJournals": ["Kardiol Pol", "Pol Arch Intern Med", "Cardiol J", "Folia Cardiol", "Pol Heart J"],
+    "polishText": 6,
+    "polishRe": "\\b(Poland|Polish|Polska|Polskiego)\\b"
+  },
+
+  "guidelines": {
+    "preferred": 15,
+    "preferredRe": "\\b(ESC|EAS|PTK|EACVI|EAPC|ESH|HFA|EHRA|EAPCI|ACVC|Polish Cardiac Society|Polskiego Towarzystwa Kardiologicznego|European Society|European Atherosclerosis)\\b",
+    "american": -10,
+    "americanRe": "\\b(ACC|AHA|ACCF|NLA|ASE|SCAI|HRS|ADA|American College|American Heart|National Lipid Association|American Society)\\b"
+  }
+}

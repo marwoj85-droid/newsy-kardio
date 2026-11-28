@@ -34,6 +34,15 @@ Dane na stronie są zaszyfrowane (AES-256-GCM, klucz z hasła przez PBKDF2). Bez
 
 Średnio ok. 60 publikacji dziennie z PubMed i ok. 7 z Elseviera.
 
+## Profil osobisty
+
+Ranking (`lib/score.mjs`) uwzględnia profil zawodowy:
+
+- `profil-zawodowy.md` opisuje profil słowami: dziedziny, czego nie pokazywać, preferowane źródła.
+- `profile.json` zawiera wagi i słowa kluczowe, których naprawdę używa ranking. Bez tego pliku ranking działa bez profilu.
+
+Artykuły z dziedzin z profilu dostają bonus i podpis „Twój profil: …”. Prace spoza profilu nie znikają, są tylko niżej. Sekcja „Najważniejsze” pokazuje 10 publikacji na dzień, a przy dłuższych okresach najwyżej 20.
+
 ## Test na komputerze
 
 ```
@@ -46,6 +55,8 @@ Potem otwórz http://localhost:3017 (przycisk odświeżania od razu pobiera nowe
 
 - `config.json`: zapytania i lista źródeł (tu dodaje się kolejne czasopisma).
 - `lib/fetch.mjs`: pobieranie, klasyfikacja typu i tematów.
+- `lib/score.mjs`: ranking punktowy z profilem osobistym.
+- `profile.json`, `profil-zawodowy.md`: profil osobisty.
 - `public/`: aplikacja (strona, manifest, service worker, ikony).
 - `.github/workflows/update.yml`: harmonogram pobierania i publikacji.
 - `server.mjs`: lokalny serwer do testów.
